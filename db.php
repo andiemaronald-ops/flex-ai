@@ -1,14 +1,13 @@
 <?php
-$servername = "localhost";
-$username = "root";   // default XAMPP username
-$password = "";       // default XAMPP password is empty
-$dbname = "flex ai";
+// InfinityFree database connection
+$servername = "sql106.infinityfree.com";   // Host from control panel
+$username   = "if0_42888299";              // Your InfinityFree username
+$password   = "ronaldkwemoi";              // Your actual DB password from control panel
+$dbname     = "if0_42888299_flexai";       // Your InfinityFree database name
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = mysqli_connect($servername, $username, $password, $dbname);
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 ?>
