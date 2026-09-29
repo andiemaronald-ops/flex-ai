@@ -1,12 +1,21 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) { header("Location: login.php"); exit(); }
+if (!isset($_SESSION['username'])) { 
+    header("Location: login.php"); 
+    exit(); 
+}
+
+include('db.php');
+
+// Get the logged-in user's username from session
 $username = $_SESSION['username'];
 
 // Fetch user email from DB
-include('db.php');
-$sql = "SELECT email FROM users WHERE username='$username'";
-$result = mysqli_query($conn, $sql);
+$sql = "SELECT email FROM users WHERE username = ?";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "s", $username);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
 $email = $row['email'];
 ?>
@@ -36,7 +45,7 @@ $email = $row['email'];
     <!-- Logo + Welcome -->
     <div class="header">
         <img src="images/logo.png" alt="flex ai Logo">
-        <h2>Welcome, <?php echo $username; ?>!</h2>
+        <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
     </div>
 
     <!-- Change Password Form -->
@@ -47,7 +56,7 @@ $email = $row['email'];
         <form method="POST" action="send_reset.php">
             <div class="mb-3">
                 <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="email" name="email" value="<?php echo $email; ?>" required>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
             </div>
             <button type="submit" class="btn btn-teal">Send Reset Link</button>
         </form>
